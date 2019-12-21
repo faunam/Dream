@@ -1,0 +1,144 @@
+<html>
+
+<head>
+    <title>Enigmatic Cadavre</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <!-- database: -->
+    <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-firestore.js"></script>
+    <style>
+        body {
+            font-family: 'Courier', sans-serif;
+            text-align: left;
+            background: black;
+            color: white;
+            font-size: 15px;
+            margin: 30px;
+        }
+        
+        .paragraph {
+            width: 600px;
+            margin-top: 10px;
+        }
+        
+        .responses {
+            font-style: italic;
+            width: 580px;
+            margin: 20px;
+            /* border-color: white;
+            border-style: solid;
+            border-width: 1px; */
+        }
+        
+        #respLineNum {
+            font-style: italic;
+            color: grey;
+            margin-right: 5px;
+            vertical-align: top;
+            margin-left: 25px;
+            /*5 buffer from table*/
+        }
+        
+        table {
+            /* border-collapse: collapse; */
+            /* border: 2px black solid; */
+            font-style: italic;
+            width: 500px;
+            color: white;
+        }
+        
+        table td:first-child {
+            color: grey;
+            vertical-align: top;
+        }
+        
+        td {
+            /* border: 1px black solid; */
+            padding: 5px;
+        }
+    </style>
+
+    <body>
+        <div class="paragraph">
+            <h1>Dream generator [DEMO]</h1>
+            <p>
+                Welcome to dream generator! You will help us generate our collective dream. Please write whatever comes to you after reading the 3 most recent responses below.
+            </p>
+            <p>
+                We will publish the collection, slightly edited for coherence, after we have received 500 responses.
+            </p>
+        </div>
+
+        <div class="responses">
+            <text> Previous 3 lines:</text>
+            <!-- contains the most recent 3 responses, with their line numbers -->
+        </div>
+
+        <div class="paragraph">
+            <form>
+                <text id="respLineNum"></text>
+                <textarea rows="5" cols="50" style="resize:none"></textarea>
+                <br /><br /> Name: <input type="text" /> Email: <input type="text" />
+                <br /><br /><input type="submit" value="Submit" />
+            </form>
+        </div>
+
+        <script>
+            const firebase = require('firebase')
+                // Required for side-effects
+            require('firebase/firestore')
+
+            d3.text('fake_data.csv', function(data) {
+                var parsedCSV = d3.csv.parseRows(data)
+                var last3Rows = parsedCSV.slice(-3)
+                    //what to do if less than 3 entries?? ^^
+
+                var container = d3
+                    .select('.responses')
+                    .append('table')
+
+                .selectAll('tr')
+                    .data(last3Rows)
+                    .enter()
+                    .append('tr')
+
+                .selectAll('td')
+                    .data(function(d) {
+                        return d
+                    })
+                    .enter()
+                    .append('td')
+                    .text(function(d) {
+                        return d
+                    })
+
+                var resp = d3
+                    .select('#respLineNum')
+                    .text(Number(last3Rows.slice(-1)[0][0]) + 1)
+            })
+        </script>
+
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+
+        <script>
+            // Your web app's Firebase configuration
+            var firebaseConfig = {
+                    apiKey: 'AIzaSyChX4oy5WjIVDkOabRtZ0LOmep8R5XGwxA',
+                    authDomain: 'dream-demo-36688.firebaseapp.com',
+                    databaseURL: 'https://dream-demo-36688.firebaseio.com',
+                    projectId: 'dream-demo-36688',
+                    storageBucket: 'dream-demo-36688.appspot.com',
+                    messagingSenderId: '499949313372',
+                    appId: '1:499949313372:web:e89a1bef34583204fc7599'
+                }
+                // Initialize Firebase
+            firebase.initializeApp(firebaseConfig)
+        </script>
+    </body>
+</head>
+
+</html>
